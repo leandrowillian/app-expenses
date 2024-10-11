@@ -1,44 +1,60 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
+    <q-header elevated class="text-white bg-primary" height-hint="61.59">
+      <q-toolbar class="q-py-sm q-px-md">
+        <q-img
+          src="~assets/icon.png"
+          color="white"
+          class="q-mr-sm"
+          style="width: 40px; height: 100%"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <div
+          class="GL__toolbar-link q-ml-xs q-gutter-md text-body2 text-weight-bold row items-center no-wrap"
+        >
+          <router-link class="header-links" to="/"> Dashboard </router-link>
+          <router-link
+            href="javascript:void(0)"
+            class="header-links"
+            to="/expenses"
+          >
+            Despesas
+          </router-link>
+        </div>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-space />
+
+        <div class="q-pl-sm q-gutter-sm row items-center no-wrap">
+          <q-btn dense flat rounded no-wrap>
+            <q-avatar rounded size="26px">
+              <q-icon name="account_circle" color="white" size="22px" />
+            </q-avatar>
+            <q-icon name="arrow_drop_down" size="16px" />
+
+            <q-menu auto-close>
+              <q-list dense>
+                <q-item class="GL__menu-link-signed-in">
+                  <q-item-section>
+                    <div>
+                      <strong class="ellipsis">{{ name }}</strong>
+                    </div>
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+
+                <q-item
+                  clickable
+                  class="GL__menu-link"
+                  @click="authStore.logout"
+                >
+                  <q-item-section>Sair</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -46,61 +62,24 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { useAuthStore } from "src/stores/auth";
+import { storeToRefs } from "pinia";
 
 defineOptions({
-  name: 'MainLayout'
-})
-
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
-const leftDrawerOpen = ref(false)
-
-function toggleLeftDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value
-}
+  name: "MainLayout",
+});
+const authStore = useAuthStore();
+const { name } = storeToRefs(authStore);
 </script>
+
+<style>
+.header-links {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+}
+.header-links:hover {
+  text-decoration: underline;
+  color: rgb(236, 236, 236);
+}
+</style>
